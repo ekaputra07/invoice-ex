@@ -1,0 +1,24 @@
+version: "3.8"
+services:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: invoicex_dev
+      POSTGRES_PASSWORD: postgres
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  elixir:
+    build: .
+    entrypoint: [ "/bin/bash", "-c", "--" ]
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./invoicex:/app
+    depends_on:
+      db:
+        condition: service_healthy
