@@ -26,6 +26,10 @@ defmodule InvoicexWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+
+    # account workspace
+    post "/create", AccountController, :create_workspace
+    get "/:uuid", AccountController, :show_workspace
   end
 
   # Other scopes may use custom stacks.
