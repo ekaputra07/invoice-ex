@@ -1,0 +1,28 @@
+<h1>Show Invoice</h1>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @invoice.name %>
+  </li>
+
+  <li>
+    <strong>Body:</strong>
+    <%= @invoice.body %>
+  </li>
+
+  <li>
+    <strong>Active:</strong>
+    <%= @invoice.active %>
+  </li>
+
+  <li>
+    <strong>Schedule:</strong>
+    <%= @invoice.schedule %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: Routes.invoice_path(@conn, :edit, @invoice) %></span> |
+<span><%= link "Back", to: Routes.invoice_path(@conn, :index) %></span>

@@ -8,28 +8,49 @@ defmodule InvoicexWeb.Router do
     conn |> assign(:brand_name, Application.fetch_env!(:invoicex, :brand_name))
   end
 
+  @doc """
+  Provide current workspace object accross the site.
+  """
+  def current_workspace(conn, _) do
+    ws = get_session(conn, :current_workspace)
+    conn |> assign(:current_workspace, ws)
+  end
+
   pipeline :browser do
-    plug :accepts, ["html"]
-    plug :fetch_session
-    plug :fetch_live_flash
-    plug :put_root_layout, {InvoicexWeb.LayoutView, :root}
-    plug :protect_from_forgery
-    plug :put_secure_browser_headers
-    plug :brand_name
+    plug(:accepts, ["html"])
+    plug(:fetch_session)
+    plug(:fetch_live_flash)
+    plug(:put_root_layout, {InvoicexWeb.LayoutView, :root})
+    plug(:protect_from_forgery)
+    plug(:put_secure_browser_headers)
+    plug(:brand_name)
+    plug(:current_workspace)
   end
 
   pipeline :api do
-    plug :accepts, ["json"]
+    plug(:accepts, ["json"])
   end
 
   scope "/", InvoicexWeb do
-    pipe_through :browser
+    pipe_through(:browser)
 
-    get "/", PageController, :index
+    get("/", PageController, :index)
+  end
 
-    # account workspace
-    post "/create", AccountController, :create_workspace
-    get "/:uuid", AccountController, :show_workspace
+  scope "/workspace", InvoicexWeb do
+    pipe_through(:browser)
+
+    post("/create", AccountController, :create_workspace)
+    post("/check", AccountController, :check_workspace)
+    get("/access", AccountController, :access_workspace)
+    get("/logout", AccountController, :exit_workspace)
+    get("/manage", AccountController, :manage_workspace)
+  end
+
+  scope "/invoices", InvoicexWeb do
+    pipe_through(:browser)
+
+    resources("/", InvoiceController)
   end
 
   # Other scopes may use custom stacks.
@@ -48,9 +69,9 @@ defmodule InvoicexWeb.Router do
     import Phoenix.LiveDashboard.Router
 
     scope "/" do
-      pipe_through :browser
+      pipe_through(:browser)
 
-      live_dashboard "/dashboard", metrics: InvoicexWeb.Telemetry
+      live_dashboard("/dashboard", metrics: InvoicexWeb.Telemetry)
     end
   end
 
@@ -60,9 +81,9 @@ defmodule InvoicexWeb.Router do
   # node running the Phoenix server.
   if Mix.env() == :dev do
     scope "/dev" do
-      pipe_through :browser
+      pipe_through(:browser)
 
-      forward "/mailbox", Plug.Swoosh.MailboxPreview
+      forward("/mailbox", Plug.Swoosh.MailboxPreview)
     end
   end
 end

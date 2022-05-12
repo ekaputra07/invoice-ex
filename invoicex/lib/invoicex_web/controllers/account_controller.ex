@@ -9,9 +9,10 @@ defmodule InvoicexWeb.AccountController do
         conn
         |> put_flash(
           :info,
-          "New workspace has been created with ID=#{workspace.uuid}. Important: don't loose this ID, you'll need this to access your invoices."
+          "A workspace created for you with key #{workspace.uuid} to manage your invoices. Please keep this key somewhere safe."
         )
-        |> redirect(to: Routes.account_path(conn, :show_workspace, workspace))
+        |> put_session(:current_workspace, workspace)
+        |> redirect(to: Routes.invoice_path(conn, :index))
 
       {:error, _} ->
         conn
@@ -20,15 +21,35 @@ defmodule InvoicexWeb.AccountController do
     end
   end
 
-  def show_workspace(conn, %{"uuid" => workspace_id}) do
-    with {:ok, uuid} <- Ecto.UUID.cast(workspace_id),
+  def access_workspace(conn, _params) do
+    current_workspace = get_session(conn, :current_workspace) || %Workspace{}
+    changeset = Accounts.change_workspace(current_workspace)
+    render(conn, "access_workspace.html", changeset: changeset)
+  end
+
+  def check_workspace(conn, %{"workspace" => workspace_params}) do
+    with {:ok, value} <- Map.fetch(workspace_params, "uuid"),
+         {:ok, uuid} <- Ecto.UUID.cast(value),
          %Workspace{} = workspace <- Accounts.get_workspace(uuid) do
-      render(conn, "show_workspace.html", workspace: workspace)
+      conn
+      |> put_session(:current_workspace, workspace)
+      |> redirect(to: Routes.invoice_path(conn, :index))
     else
       _ ->
         conn
         |> put_flash(:error, "Workspace not found!")
-        |> redirect(to: Routes.page_path(conn, :index))
+        |> redirect(to: Routes.account_path(conn, :access_workspace))
     end
+  end
+
+  def manage_workspace(conn, _) do
+    render(conn, "manage_workspace.html", workspace: conn.assigns.current_workspace)
+  end
+
+  def exit_workspace(conn, _params) do
+    conn
+    |> clear_session()
+    |> put_flash(:info, "You're logged-out.")
+    |> redirect(to: Routes.page_path(conn, :index))
   end
 end

@@ -1,0 +1,5 @@
+<%= form_for @changeset, Routes.account_path(@conn, :check_workspace), [method: :post], fn f -> %>
+<%= label f, :uuid, "Access key" %>
+<%= text_input f, :uuid %>
+<%= submit "Access my invoice" %>
+<% end %>

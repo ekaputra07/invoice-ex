@@ -9,6 +9,8 @@ defmodule Invoicex.Accounts.Workspace do
   schema "workspaces" do
     field :uuid, Ecto.UUID
 
+    has_many :invoices, Invoicex.Invoices.Invoice
+
     timestamps()
   end
 

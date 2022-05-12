@@ -2,7 +2,11 @@
   <h1>Welcome to <%= @brand_name %>!</h1>
   <p>Simple invoice automator for <strike>lazy</strike> <strong>smart</strong> independent contractors.</p>
   <p>
-  <%= link "CREATE INVOICE", to: Routes.account_path(@conn, :create_workspace), method: :post, class: "button" %>
+  <%= if @current_workspace do %>
+    <%= link "My Invoices", to: Routes.invoice_path(@conn, :index), class: "button" %>
+  <% else %>
+    <%= link "CREATE INVOICE", to: Routes.account_path(@conn, :create_workspace), method: :post, class: "button" %>
+  <% end %>
   </p>
 </section>
 
