@@ -15,7 +15,9 @@ defmodule Invoicex.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: Invoicex.PubSub},
       # Start the Endpoint (http/https)
-      InvoicexWeb.Endpoint
+      InvoicexWeb.Endpoint,
+      # Oban
+      {Oban, Application.fetch_env!(:invoicex, Oban)}
       # Start a worker by calling: Invoicex.Worker.start_link(arg)
       # {Invoicex.Worker, arg}
     ]

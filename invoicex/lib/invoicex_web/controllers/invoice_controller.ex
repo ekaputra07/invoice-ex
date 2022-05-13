@@ -3,7 +3,6 @@ defmodule InvoicexWeb.InvoiceController do
 
   alias Invoicex.Invoices
   alias Invoicex.Invoices.Invoice
-  alias Invoicex.Accounts.Workspace
 
   def index(conn, _params) do
     invoices = Invoices.list_invoices(conn.assigns.current_workspace)
@@ -62,5 +61,14 @@ defmodule InvoicexWeb.InvoiceController do
     conn
     |> put_flash(:info, "Invoice deleted successfully.")
     |> redirect(to: Routes.invoice_path(conn, :index))
+  end
+
+  def sending_test(conn, %{"id" => id}) do
+    invoice = Invoices.get_invoice!(conn.assigns.current_workspace, id)
+    invoice |> Invoices.schedule_test_invoice()
+
+    conn
+    |> put_flash(:info, "Sending test email has been scheduled.")
+    |> redirect(to: Routes.invoice_path(conn, :show, invoice))
   end
 end

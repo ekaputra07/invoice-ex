@@ -45,6 +45,7 @@ defmodule InvoicexWeb.Router do
     pipe_through([:browser, :authenticated])
 
     resources("/", InvoiceController)
+    post("/:id/sending_test", InvoiceController, :sending_test)
   end
 
   # Other scopes may use custom stacks.

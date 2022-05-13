@@ -25,4 +25,5 @@
 </ul>
 
 <span><%= link "Edit", to: Routes.invoice_path(@conn, :edit, @invoice) %></span> |
-<span><%= link "Back", to: Routes.invoice_path(@conn, :index) %></span>
+<span><%= link "Back", to: Routes.invoice_path(@conn, :index) %></span> |
+<span><%= link "Send Test Email", to: Routes.invoice_path(@conn, :sending_test, @invoice), method: :post, data: [confirm: "Are you sure?"] %></span>

@@ -20,6 +20,9 @@ if System.get_env("PHX_SERVER") do
   config :invoicex, InvoicexWeb.Endpoint, server: true
 end
 
+config :invoicex,
+  api2pdf_key: System.get_env("API2PDF_KEY") || ""
+
 if config_env() == :prod do
   database_url =
     System.get_env("DATABASE_URL") ||

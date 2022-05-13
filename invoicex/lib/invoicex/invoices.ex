@@ -40,14 +40,16 @@ defmodule Invoicex.Invoices do
       ** (Ecto.NoResultsError)
 
   """
+  def get_invoice!(id) do
+    Invoice
+    |> Repo.get!(id)
+    |> Repo.preload(:workspace)
+  end
+
   def get_invoice!(workspace, id) do
     Invoice
     |> Repo.get_by!(workspace_id: workspace.id, id: id)
     |> Repo.preload(:workspace)
-
-    # Invoice
-    # |> Repo.get!(id)
-    # |> Repo.preload(:workspace)
   end
 
   @doc """
@@ -125,5 +127,31 @@ defmodule Invoicex.Invoices do
     |> Repo.preload(:workspace)
     |> Invoice.changeset(attrs)
     |> Ecto.Changeset.put_assoc(:workspace, workspace)
+  end
+
+  def get_pdf(%Invoice{} = invoice) do
+    Invoicex.Utils.PDF.html_to_pdf(invoice.body, Application.fetch_env!(:invoicex, :api2pdf_key))
+  end
+
+  def next_run_date(%Invoice{} = invoice) do
+    with true <- invoice.active,
+         {:ok, cron} <- Crontab.CronExpression.Parser.parse(invoice.schedule),
+         {:ok, date} <- Crontab.Scheduler.get_next_run_date(cron) do
+      date
+    else
+      _ -> nil
+    end
+  end
+
+  def schedule_invoice(%Invoice{} = invoice, options \\ []) do
+    %{id: invoice.id, options: Enum.into(options[:job] || [], %{})}
+    |> Invoicex.Workers.InvoiceSender.new(options[:worker])
+    |> Oban.insert()
+  end
+
+  def schedule_test_invoice(%Invoice{} = invoice, options \\ []) do
+    %{id: invoice.id, options: Enum.into(options, %{})}
+    |> Invoicex.Workers.InvoiceTestSender.new()
+    |> Oban.insert()
   end
 end

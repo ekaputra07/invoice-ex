@@ -4,6 +4,7 @@ defmodule Invoicex.Invoices.Invoice do
 
   schema "invoices" do
     field :active, :boolean, default: false
+    field :repeat, :boolean, default: false
     field :body, :string
     field :name, :string
     field :schedule, :string
@@ -16,7 +17,7 @@ defmodule Invoicex.Invoices.Invoice do
   @doc false
   def changeset(invoice, attrs) do
     invoice
-    |> cast(attrs, [:name, :body, :active, :schedule])
-    |> validate_required([:name, :body, :active, :schedule])
+    |> cast(attrs, [:name, :body, :active, :repeat, :schedule])
+    |> validate_required([:name, :body, :active, :repeat, :schedule])
   end
 end

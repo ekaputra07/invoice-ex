@@ -4,10 +4,10 @@
   <thead>
     <tr>
       <th>Name</th>
-      <th>Workspace</th>
+      <th>Recurring</th>
       <th>Active</th>
       <th>Schedule</th>
-
+      <th>Next Run Date</th>
       <th></th>
     </tr>
   </thead>
@@ -15,9 +15,10 @@
 <%= for invoice <- @invoices do %>
     <tr>
       <td><%= invoice.name %></td>
-      <td><%= invoice.workspace_id %></td>
+      <td><%= invoice.repeat %></td>
       <td><%= invoice.active %></td>
       <td><%= invoice.schedule %></td>
+      <td><%= Invoices.next_run_date(invoice) || "-" %></td>
 
       <td>
         <span><%= link "Show", to: Routes.invoice_path(@conn, :show, invoice) %></span>
