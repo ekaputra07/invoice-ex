@@ -1,21 +1,6 @@
 defmodule InvoicexWeb.Router do
   use InvoicexWeb, :router
 
-  @doc """
-  Provide :brand_name accross the site.
-  """
-  def brand_name(conn, _) do
-    conn |> assign(:brand_name, Application.fetch_env!(:invoicex, :brand_name))
-  end
-
-  @doc """
-  Provide current workspace object accross the site.
-  """
-  def current_workspace(conn, _) do
-    ws = get_session(conn, :current_workspace)
-    conn |> assign(:current_workspace, ws)
-  end
-
   pipeline :browser do
     plug(:accepts, ["html"])
     plug(:fetch_session)
@@ -23,8 +8,12 @@ defmodule InvoicexWeb.Router do
     plug(:put_root_layout, {InvoicexWeb.LayoutView, :root})
     plug(:protect_from_forgery)
     plug(:put_secure_browser_headers)
-    plug(:brand_name)
-    plug(:current_workspace)
+    plug(InvoicexWeb.Plugs.BrandName)
+    plug(InvoicexWeb.Plugs.CurrentWorkspace)
+  end
+
+  pipeline :authenticated do
+    plug(InvoicexWeb.Plugs.LoginRequired)
   end
 
   pipeline :api do
@@ -43,12 +32,17 @@ defmodule InvoicexWeb.Router do
     post("/create", AccountController, :create_workspace)
     post("/check", AccountController, :check_workspace)
     get("/access", AccountController, :access_workspace)
+  end
+
+  scope "/workspace", InvoicexWeb do
+    pipe_through([:browser, :authenticated])
+
     get("/logout", AccountController, :exit_workspace)
     get("/manage", AccountController, :manage_workspace)
   end
 
   scope "/invoices", InvoicexWeb do
-    pipe_through(:browser)
+    pipe_through([:browser, :authenticated])
 
     resources("/", InvoiceController)
   end

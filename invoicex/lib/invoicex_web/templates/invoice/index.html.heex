@@ -4,6 +4,7 @@
   <thead>
     <tr>
       <th>Name</th>
+      <th>Workspace</th>
       <th>Active</th>
       <th>Schedule</th>
 
@@ -14,6 +15,7 @@
 <%= for invoice <- @invoices do %>
     <tr>
       <td><%= invoice.name %></td>
+      <td><%= invoice.workspace_id %></td>
       <td><%= invoice.active %></td>
       <td><%= invoice.schedule %></td>
 

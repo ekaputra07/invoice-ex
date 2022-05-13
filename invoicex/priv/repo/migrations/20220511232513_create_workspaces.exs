@@ -3,11 +3,11 @@ defmodule Invoicex.Repo.Migrations.CreateWorkspaces do
 
   def change do
     create table(:workspaces) do
-      add :uuid, :uuid
+      add(:uuid, :uuid)
 
       timestamps()
     end
 
-    create unique_index(:workspaces, [:uuid])
+    create(unique_index(:workspaces, [:uuid]))
   end
 end

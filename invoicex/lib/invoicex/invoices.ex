@@ -6,6 +6,7 @@ defmodule Invoicex.Invoices do
   import Ecto.Query, warn: false
   alias Invoicex.Repo
 
+  alias Invoicex.Accounts.Workspace
   alias Invoicex.Invoices.Invoice
 
   @doc """
@@ -17,8 +18,12 @@ defmodule Invoicex.Invoices do
       [%Invoice{}, ...]
 
   """
-  def list_invoices do
-    Repo.all(Invoice)
+  def list_invoices(workspace) do
+    Repo.all(
+      from(i in Invoice,
+        where: i.workspace_id == ^workspace.id
+      )
+    )
   end
 
   @doc """
@@ -35,7 +40,15 @@ defmodule Invoicex.Invoices do
       ** (Ecto.NoResultsError)
 
   """
-  def get_invoice!(id), do: Repo.get!(Invoice, id)
+  def get_invoice!(workspace, id) do
+    Invoice
+    |> Repo.get_by!(workspace_id: workspace.id, id: id)
+    |> Repo.preload(:workspace)
+
+    # Invoice
+    # |> Repo.get!(id)
+    # |> Repo.preload(:workspace)
+  end
 
   @doc """
   Creates a invoice.
@@ -51,7 +64,7 @@ defmodule Invoicex.Invoices do
   """
   def create_invoice(attrs \\ %{}) do
     %Invoice{}
-    |> Invoice.changeset(attrs)
+    |> change_invoice(attrs)
     |> Repo.insert()
   end
 
@@ -69,7 +82,7 @@ defmodule Invoicex.Invoices do
   """
   def update_invoice(%Invoice{} = invoice, attrs) do
     invoice
-    |> Invoice.changeset(attrs)
+    |> change_invoice(attrs)
     |> Repo.update()
   end
 
@@ -99,6 +112,18 @@ defmodule Invoicex.Invoices do
 
   """
   def change_invoice(%Invoice{} = invoice, attrs \\ %{}) do
-    Invoice.changeset(invoice, attrs)
+    # workspace can't be changed after set
+    workspace =
+      case invoice.workspace do
+        # on update
+        %Workspace{} -> invoice.workspace
+        # on create
+        _ -> attrs["workspace"]
+      end
+
+    invoice
+    |> Repo.preload(:workspace)
+    |> Invoice.changeset(attrs)
+    |> Ecto.Changeset.put_assoc(:workspace, workspace)
   end
 end
