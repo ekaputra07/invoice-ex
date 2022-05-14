@@ -129,8 +129,26 @@ defmodule Invoicex.Invoices do
     |> Ecto.Changeset.put_assoc(:workspace, workspace)
   end
 
-  def get_pdf(%Invoice{} = invoice) do
+  def get_pdf_url(%Invoice{} = invoice) do
     Invoicex.Utils.PDF.html_to_pdf(invoice.body, Application.fetch_env!(:invoicex, :api2pdf_key))
+  end
+
+  def get_pdf_file(%Invoice{} = invoice, pdf_url) do
+    uuid = Ecto.UUID.generate()
+
+    # simple effort to cleanup the name
+    file_name =
+      invoice.name
+      |> String.downcase()
+      |> String.replace(" ", "-")
+      |> Kernel.<>(".pdf")
+
+    pdf_path = "/tmp/invoicex/pdfs/#{uuid}/#{file_name}"
+
+    case Invoicex.Utils.File.download(pdf_url, pdf_path) do
+      {:ok, _} -> {:ok, pdf_path}
+      error -> error
+    end
   end
 
   def next_run_date(%Invoice{} = invoice) do

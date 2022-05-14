@@ -6,12 +6,13 @@ defmodule InvoicexWeb.Email do
   alias Invoicex.Mailer
   alias Invoicex.Invoices.Invoice
 
-  def send_invoice(%Invoice{} = invoice, pdf_url) do
+  def send_invoice(%Invoice{} = invoice, pdf_path) do
     new()
     |> from("noreply@upkoding.com")
     |> to("ekaputra07@gmail.com")
     |> subject("[InvoiceMator] Your invoice is ready!")
-    |> render_body("welcome.html", %{invoice: invoice, pdf_url: pdf_url})
+    |> render_body("welcome.html", %{invoice: invoice})
+    |> attachment(pdf_path)
     |> Mailer.deliver()
   end
 end
