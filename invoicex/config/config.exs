@@ -8,7 +8,7 @@
 import Config
 
 config :invoicex,
-  brand_name: "InvoiceMator"
+  brand_name: "Send Me Invoice!"
 
 config :invoicex,
   ecto_repos: [Invoicex.Repo]

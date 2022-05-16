@@ -1,19 +1,13 @@
 <section class="phx-hero">
-  <h1>Welcome to <%= @brand_name %>!</h1>
-  <p>Simple invoice automator for <strike>lazy</strike> <strong>smart</strong> independent contractors.</p>
-  <p>
+  <h1><%= @brand_name %></h1>
+  <p class="tagline">Simple and effortless invoice automation for busy people.</p>
+  <hr/>
+  <p>Pick a template or bring your own &middot; Customize dynamic variables with our limited yet useful set of macros &middot; Set delivery schedule, one time or recurring &middot; Set back and relax!</p>
+  <p style="margin-top: 10%">
   <%= if @current_workspace do %>
-    <%= link "My Invoices", to: Routes.invoice_path(@conn, :index), class: "button" %>
+    <%= link "My Invoices", to: Routes.invoice_path(@conn, :index), class: "button button-large" %>
   <% else %>
-    <%= link "CREATE INVOICE", to: Routes.account_path(@conn, :create_workspace), method: :post, class: "button" %>
+    <%= link "CREATE INVOICE", to: Routes.account_path(@conn, :create_workspace), method: :post, class: "button button-large" %>
   <% end %>
   </p>
-</section>
-
-<section class="row">
-  <article class="column">
-    <h3>What is exactly <%= @brand_name %>?</h3>
-    <p><%= @brand_name %> allows you to create simple invoice and send them to you every month via email so you don't have to create or edit your invoice template manually.</p>
-    <p>By using provided macros, you'll be able to customize invoice ID, issue date, due date etc.</p>
-  </article>
 </section>
