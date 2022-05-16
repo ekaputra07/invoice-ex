@@ -63,6 +63,15 @@ defmodule InvoicexWeb.InvoiceController do
     |> redirect(to: Routes.invoice_path(conn, :index))
   end
 
+  def preview(conn, %{"id" => id}) do
+    invoice = Invoices.get_invoice!(conn.assigns.current_workspace, id)
+
+    conn
+    |> put_root_layout(false)
+    |> put_layout(false)
+    |> render("preview.html", invoice: invoice)
+  end
+
   def sending_test(conn, %{"id" => id}) do
     invoice = Invoices.get_invoice!(conn.assigns.current_workspace, id)
     invoice |> Invoices.schedule_test_invoice()

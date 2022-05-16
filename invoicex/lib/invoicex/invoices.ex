@@ -130,7 +130,10 @@ defmodule Invoicex.Invoices do
   end
 
   def get_pdf_url(%Invoice{} = invoice) do
-    Invoicex.Utils.PDF.html_to_pdf(invoice.body, Application.fetch_env!(:invoicex, :api2pdf_key))
+    Invoicex.Utils.PDF.html_to_pdf(
+      Invoicex.Utils.Mustache.render(invoice.body),
+      Application.fetch_env!(:invoicex, :api2pdf_api_key)
+    )
   end
 
   def get_pdf_file(%Invoice{} = invoice, pdf_url) do

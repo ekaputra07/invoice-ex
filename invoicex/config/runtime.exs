@@ -21,7 +21,12 @@ if System.get_env("PHX_SERVER") do
 end
 
 config :invoicex,
-  api2pdf_key: System.get_env("API2PDF_KEY") || ""
+  api2pdf_api_key:
+    System.get_env("API2PDF_API_KEY") ||
+      raise("""
+      environment variable API2PDF_API_KEY is missing.
+      HTML to PDF conversion will failed.
+      """)
 
 if config_env() == :prod do
   database_url =

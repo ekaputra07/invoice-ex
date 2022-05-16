@@ -52,7 +52,8 @@ defmodule Invoicex.MixProject do
       {:plug_cowboy, "~> 2.5"},
       {:oban, "~> 2.12"},
       {:crontab, "~> 1.1"},
-      {:httpoison, "~> 1.8"}
+      {:httpoison, "~> 1.8"},
+      {:mustache, "~> 0.4.0"}
     ]
   end
 

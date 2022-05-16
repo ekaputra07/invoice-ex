@@ -6,6 +6,7 @@ defmodule Invoicex.Repo.Migrations.CreateInvoices do
       add(:name, :string)
       add(:body, :text)
       add(:active, :boolean, default: false, null: false)
+      add(:repeat, :boolean, default: false, null: false)
       add(:schedule, :string)
       add(:workspace_id, references(:workspaces, on_delete: :delete_all))
 
