@@ -21,17 +21,12 @@ defmodule InvoicexWeb.InvoiceController do
          ) do
       {:ok, invoice} ->
         conn
-        |> put_flash(:info, "Invoice created successfully.")
-        |> redirect(to: Routes.invoice_path(conn, :show, invoice))
+        |> put_flash(:info, "#{invoice.name} created successfully.")
+        |> redirect(to: Routes.invoice_path(conn, :index))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset)
     end
-  end
-
-  def show(conn, %{"id" => id}) do
-    invoice = Invoices.get_invoice!(conn.assigns.current_workspace, id)
-    render(conn, "show.html", invoice: invoice)
   end
 
   def edit(conn, %{"id" => id}) do
@@ -46,8 +41,8 @@ defmodule InvoicexWeb.InvoiceController do
     case Invoices.update_invoice(invoice, invoice_params) do
       {:ok, invoice} ->
         conn
-        |> put_flash(:info, "Invoice updated successfully.")
-        |> redirect(to: Routes.invoice_path(conn, :show, invoice))
+        |> put_flash(:info, "#{invoice.name} updated successfully.")
+        |> redirect(to: Routes.invoice_path(conn, :index))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "edit.html", invoice: invoice, changeset: changeset)
@@ -77,7 +72,7 @@ defmodule InvoicexWeb.InvoiceController do
     invoice |> Invoices.schedule_test_invoice()
 
     conn
-    |> put_flash(:info, "Sending test email has been scheduled.")
-    |> redirect(to: Routes.invoice_path(conn, :show, invoice))
+    |> put_flash(:info, "Test email has been scheduled for #{invoice.name}.")
+    |> redirect(to: Routes.invoice_path(conn, :index))
   end
 end

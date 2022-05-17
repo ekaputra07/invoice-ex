@@ -70,6 +70,7 @@ select {
   font-weight: 500;
   margin-bottom: 0.5%;
 }
+
 .phx-hero .tagline {
   font-size: 120%;
   font-weight: 300;
@@ -126,10 +127,11 @@ header section :last-child {
 header nav ul,
 header nav li {
   margin: 0;
-  padding: 0;
-  display: block;
+  padding: 0 0 0 1em;
+  display: inline;
   text-align: right;
   white-space: nowrap;
+  font-weight: 400;
 }
 
 header nav ul {
@@ -137,8 +139,30 @@ header nav ul {
   margin-top: 0;
 }
 
-header nav a {
+footer {
+  text-align: center;
+}
+
+footer ul {
+  width: 100%;
+  margin: 1em auto;
   display: block;
+}
+
+footer li {
+  margin: 0;
+  padding: 0 0 0 1em;
+  display: inline;
+  white-space: nowrap;
+}
+
+table td {
+  font-weight: 400;
+}
+
+table td.actions a {
+  display: inline-block;
+  margin-left: 10px;
 }
 
 @media (min-width: 40.0rem) {

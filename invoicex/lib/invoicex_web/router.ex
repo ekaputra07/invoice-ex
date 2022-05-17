@@ -44,7 +44,7 @@ defmodule InvoicexWeb.Router do
   scope "/invoices", InvoicexWeb do
     pipe_through([:browser, :authenticated])
 
-    resources("/", InvoiceController)
+    resources("/", InvoiceController, except: [:show])
     get("/:id/preview", InvoiceController, :preview)
     post("/:id/sending_test", InvoiceController, :sending_test)
   end

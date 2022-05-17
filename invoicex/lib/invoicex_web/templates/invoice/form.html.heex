@@ -2,31 +2,43 @@
   <%= if @changeset.action do %>
     <div class="alert alert-danger">
       <p>Oops, something went wrong! Please check the errors below.</p>
-      <%= inspect(@changeset.errors) %>
     </div>
   <% end %>
 
-  <%= label f, :name %>
-  <%= text_input f, :name %>
-  <%= error_tag f, :name %>
+  <%= label f, :name, "Name" %>
+    <%= error_tag f, :name %>
+  <%= text_input f, :name, placeholder: "Name of your invoice" %>
 
-  <%= label f, :body %>
+  <%= label f, :body, "Body" %>
+    <%= error_tag f, :body %>
   <%= textarea f, :body %>
-  <%= error_tag f, :body %>
 
-  <%= label f, :active %>
-  <%= checkbox f, :active %>
-  <%= error_tag f, :active %>
+  <hr/>
 
-  <%= label f, :schedule %>
-  <%= text_input f, :schedule %>
-  <%= error_tag f, :schedule %>
+  <div class="row" style="margin-top: 2em">
+    <div class="column">
+      <label>Settings</label>
+      <%= checkbox f, :active %>
+      <span>Invoice is active</span>
+      <br/>
+      <%= checkbox f, :repeat %>
+      <span>Invoice is recurring</span>
+    </div>
+    
+    <div class="column">
+      <%= label f, :schedule %> <%= error_tag f, :schedule %>
+      <%= text_input f, :schedule, placeholder: "0 0 1 * *" %>
+      <small>* Need help with scheduling syntax? <a href="https://crontab.guru/" target="_blank">check this out</a>.</small>
+    </div>
+  </div>
+    <hr/>
+      <div>
+      <small>* Inactive invoice won't be generated at scheduled time.</small><br/>
+      <small>* Recurring invoice always delivered to you at scheduled time.</small><br/>
+      </div>
 
-  <%= label f, :repeat %>
-  <%= checkbox f, :repeat %>
-  <%= error_tag f, :repeat %>
-
+  <hr/>
   <div>
-    <%= submit "Save" %>
+    <%= submit "Save Invoice", class: "float-right clearfix" %>
   </div>
 </.form>

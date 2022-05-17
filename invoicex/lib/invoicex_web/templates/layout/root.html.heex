@@ -7,6 +7,7 @@
     <meta name="csrf-token" content={csrf_token_value()}>
     <%= live_title_tag assigns[:page_title] || @brand_name, suffix: " · Simple invoice automator for lazy (smart) independent contractors" %>
     <link phx-track-static rel="stylesheet" href={Routes.static_path(@conn, "/assets/app.css")}/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script defer phx-track-static type="text/javascript" src={Routes.static_path(@conn, "/assets/app.js")}></script>
 
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
@@ -32,18 +33,12 @@
       <section class="container">
         <nav>
           <ul>
-            <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
-              <li><%= link "LiveDashboard", to: Routes.live_dashboard_path(@conn, :home) %></li>
-            <% end %>
-            <li>
-    
             <%= if @current_workspace do %>
-              <%= link "Settings", to: Routes.account_path(@conn, :manage_workspace) %>
-              <%= link "Log out", to: Routes.account_path(@conn, :exit_workspace) %>
+              <li><%= link "Settings", to: Routes.account_path(@conn, :manage_workspace) %></li>
+              <li><%= link "Logout", to: Routes.account_path(@conn, :exit_workspace) %></li>
             <% else %>
-              <%= link "Manage Invoices", to: Routes.account_path(@conn, :access_workspace) %>
+              <li><%= link "Manage Invoices", to: Routes.account_path(@conn, :access_workspace) %></li>
             <% end %>
-            </li>
           </ul>
         </nav>
         <a href="/" class="phx-logo">
@@ -52,5 +47,14 @@
       </section>
     </header>
     <%= @inner_content %>
+
+    <footer class="container footer">
+      <ul>
+        <li><%= link "Privacy Policy", to: Routes.account_path(@conn, :manage_workspace) %></li>
+      </ul>
+      <ul>
+        <li>&copy; <%= DateTime.utc_now.year %> sendmeinvoice.com</li>
+      </ul>
+    </footer>
   </body>
 </html>
