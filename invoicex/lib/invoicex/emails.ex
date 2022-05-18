@@ -124,7 +124,7 @@ defmodule Invoicex.Emails do
     |> Ecto.Changeset.put_assoc(:workspace, workspace)
   end
 
-  def generate_verification_token(conn, %Email{} = email, max_age \\ 86400) do
+  def generate_verification_token(%Plug.Conn{} = conn, %Email{} = email, max_age \\ 86400) do
     Phoenix.Token.sign(conn, email.workspace.uuid, email.id, max_age: max_age)
   end
 end

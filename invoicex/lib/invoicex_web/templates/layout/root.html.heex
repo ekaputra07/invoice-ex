@@ -42,13 +42,14 @@
           </ul>
         </nav>
         <a href="/" class="phx-logo">
-          <img src={Routes.static_path(@conn, "/images/logo.png")} alt="InvoiceX Logo"/>
+          <img src={Routes.static_path(@conn, "/images/logo.png")} alt={@brand_name}/>
         </a>
       </section>
     </header>
     <%= @inner_content %>
 
     <footer class="container footer">
+      <hr/>
       <ul>
         <li><%= link "Privacy Policy", to: Routes.account_path(@conn, :manage_workspace) %></li>
       </ul>

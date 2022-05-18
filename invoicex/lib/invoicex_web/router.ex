@@ -26,21 +26,25 @@ defmodule InvoicexWeb.Router do
     get("/", PageController, :index)
   end
 
-  scope "/workspace", InvoicexWeb do
+  # worksoace
+  scope "/", InvoicexWeb do
     pipe_through(:browser)
 
-    post("/create", AccountController, :create_workspace)
-    post("/check", AccountController, :check_workspace)
-    get("/access", AccountController, :access_workspace)
+    scope "/workspace" do
+      post("/create", AccountController, :create_workspace)
+      post("/check", AccountController, :check_workspace)
+      get("/access", AccountController, :access_workspace)
+    end
+
+    scope "/workspace" do
+      pipe_through(:authenticated)
+
+      get("/logout", AccountController, :exit_workspace)
+      get("/manage", AccountController, :manage_workspace)
+    end
   end
 
-  scope "/workspace", InvoicexWeb do
-    pipe_through([:browser, :authenticated])
-
-    get("/logout", AccountController, :exit_workspace)
-    get("/manage", AccountController, :manage_workspace)
-  end
-
+  # invoices
   scope "/invoices", InvoicexWeb do
     pipe_through([:browser, :authenticated])
 
@@ -49,10 +53,21 @@ defmodule InvoicexWeb.Router do
     post("/:id/sending_test", InvoiceController, :sending_test)
   end
 
-  scope "/emails", InvoicexWeb do
-    pipe_through([:browser, :authenticated])
+  # emails
+  scope "/", InvoicexWeb do
+    pipe_through(:browser)
 
-    resources("/", EmailController, except: [:show, :edit, :update])
+    scope "/emails" do
+      get("/verify/status", EmailController, :verification_status)
+      get("/verify/:token", EmailController, :verify_email)
+    end
+
+    scope "/emails" do
+      pipe_through(:authenticated)
+
+      resources("/", EmailController, except: [:show, :edit, :update])
+      post("/:id/send_verification_email", EmailController, :send_verification_email)
+    end
   end
 
   # Other scopes may use custom stacks.

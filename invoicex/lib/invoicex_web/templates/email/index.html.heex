@@ -3,21 +3,28 @@
     <tr>
       <th>Email</th>
       <th>Verified</th>
-
       <th></th>
     </tr>
   </thead>
   <tbody>
-<%= for email <- @emails do %>
-    <tr>
-      <td><%= email.email %></td>
-      <td><%= email.verified %> (<%= token(@conn, email) %>)</td>
-      <td>
-        <span><%= link "Delete", to: Routes.email_path(@conn, :delete, email), method: :delete, data: [confirm: "Are you sure?"] %></span>
-      </td>
-    </tr>
-<% end %>
+  <%= for email <- @emails do %>
+      <tr>
+        <td><%= email.email %></td>
+        <td>
+        <%= if email.verified do %>
+        <i class="fa fa-check-circle" style="color: #156500"/>
+        <% else %>
+        <%= link "Verify", to: Routes.email_path(@conn, :send_verification_email, email), method: :post, class: "button button-outline button-small" %>
+        <% end %>
+        </td>
+        <td>
+        <%= link to: Routes.email_path(@conn, :delete, email), title: "Delete email", method: :delete, data: [confirm: "Are you sure?"] do %>
+          <i class="fa fa-trash"></i>
+        <% end %>
+        </td>
+      </tr>
+  <% end %>
   </tbody>
 </table>
 
-<span><%= link "New Email", to: Routes.email_path(@conn, :new) %></span>
+<span><%= link "New Email", to: Routes.email_path(@conn, :new), class: "button button-outline" %></span>

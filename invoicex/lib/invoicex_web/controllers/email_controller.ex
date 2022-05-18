@@ -34,4 +34,30 @@ defmodule InvoicexWeb.EmailController do
     |> put_flash(:info, "#{email.email} deleted successfully.")
     |> redirect(to: Routes.email_path(conn, :index))
   end
+
+  def send_verification_email(conn, %{"id" => id}) do
+    email = Emails.get_email!(conn.assigns.current_workspace, id)
+
+    conn
+    |> InvoicexWeb.Mailer.send_email_verification_link(email)
+    |> case do
+      {:ok, _} ->
+        conn
+        |> put_flash(:info, "Verification link sent to #{email.email}")
+        |> redirect(to: Routes.email_path(conn, :index))
+
+      _ ->
+        conn
+        |> put_flash(:error, "Sorry! we're having issue sending verification email.")
+        |> redirect(to: Routes.email_path(conn, :index))
+    end
+  end
+
+  def verify_email(conn, %{"token" => token}) do
+    conn
+    |> put_flash(:info, "Email verified!")
+    |> redirect(to: Routes.email_path(conn, :verification_status))
+  end
+
+  def verification_status(conn, _params), do: render(conn, "verification_status.html")
 end
