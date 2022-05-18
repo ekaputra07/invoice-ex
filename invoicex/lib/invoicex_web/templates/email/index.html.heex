@@ -1,0 +1,23 @@
+<table>
+  <thead>
+    <tr>
+      <th>Email</th>
+      <th>Verified</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for email <- @emails do %>
+    <tr>
+      <td><%= email.email %></td>
+      <td><%= email.verified %> (<%= token(@conn, email) %>)</td>
+      <td>
+        <span><%= link "Delete", to: Routes.email_path(@conn, :delete, email), method: :delete, data: [confirm: "Are you sure?"] %></span>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<span><%= link "New Email", to: Routes.email_path(@conn, :new) %></span>

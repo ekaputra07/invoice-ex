@@ -7,9 +7,10 @@ defmodule Invoicex.Accounts.Workspace do
   @derive {Phoenix.Param, key: :uuid}
 
   schema "workspaces" do
-    field :uuid, Ecto.UUID
+    field(:uuid, Ecto.UUID)
 
-    has_many :invoices, Invoicex.Invoices.Invoice
+    has_many(:invoices, Invoicex.Invoices.Invoice)
+    has_many(:emails, Invoicex.Emails.Email)
 
     timestamps()
   end

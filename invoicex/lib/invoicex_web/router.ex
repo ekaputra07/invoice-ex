@@ -49,6 +49,12 @@ defmodule InvoicexWeb.Router do
     post("/:id/sending_test", InvoiceController, :sending_test)
   end
 
+  scope "/emails", InvoicexWeb do
+    pipe_through([:browser, :authenticated])
+
+    resources("/", EmailController, except: [:show, :edit, :update])
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", InvoicexWeb do
   #   pipe_through :api
