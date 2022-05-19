@@ -16,5 +16,6 @@ defmodule Invoicex.Emails.Email do
     email
     |> cast(attrs, [:email])
     |> validate_required([:email])
+    |> validate_format(:email, ~r/@/)
   end
 end

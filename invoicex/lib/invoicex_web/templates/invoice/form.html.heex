@@ -10,8 +10,22 @@
   <%= text_input f, :name, placeholder: "Name of your invoice" %>
 
   <%= label f, :body, "Body" %>
-    <%= error_tag f, :body %>
+  <%= error_tag f, :body %>
   <%= textarea f, :body %>
+
+  <hr/>
+
+  <label>Send to</label>
+  <%= error_tag f, :emails %>
+  <%= with options <- checkbox_options(@conn, f, @changeset) do %>
+    <%= if length(options) > 0  do %>
+      <%= for opt <- checkbox_options(@conn, f, @changeset) do %>
+      <input type="checkbox" checked={opt.checked} name="invoice[emails][]" value={opt.value}/> <%= opt.label %><br/>
+      <% end %>
+    <% else %>
+      <p>You have no verified email. Add or validate existing ones <%= link "here", to: Routes.email_path(@conn, :index) %>.</p>
+    <% end %>
+  <% end %>
 
   <hr/>
 
@@ -33,6 +47,7 @@
   </div>
     <hr/>
       <div>
+      <small>* Invoice ONLY delivered to email address(es) that are verified.</small><br/>
       <small>* Updating the schedule while current period is running affecting invoice next run date.</small><br/>
       </div>
 

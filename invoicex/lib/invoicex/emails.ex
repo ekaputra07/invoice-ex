@@ -27,6 +27,28 @@ defmodule Invoicex.Emails do
     Repo.all(Email)
   end
 
+  def list_verified_emails(workspace) do
+    Repo.all(
+      from(
+        e in Email,
+        where: e.workspace_id == ^workspace.id,
+        where: e.verified == true
+      )
+    )
+  end
+
+  def list_emails_by_ids(workspace, nil), do: []
+
+  def list_emails_by_ids(workspace, ids) do
+    Repo.all(
+      from(
+        e in Email,
+        where: e.workspace_id == ^workspace.id,
+        where: e.id in ^ids
+      )
+    )
+  end
+
   @doc """
   Gets a single email.
 
@@ -43,7 +65,13 @@ defmodule Invoicex.Emails do
   """
   def get_email!(workspace, id) do
     Email
-    |> Repo.get_by(workspace_id: workspace.id, id: id)
+    |> Repo.get_by!(workspace_id: workspace.id, id: id)
+    |> Repo.preload(:workspace)
+  end
+
+  def get_email(id) do
+    Email
+    |> Repo.get_by(id: id)
     |> Repo.preload(:workspace)
   end
 
@@ -124,7 +152,25 @@ defmodule Invoicex.Emails do
     |> Ecto.Changeset.put_assoc(:workspace, workspace)
   end
 
-  def generate_verification_token(%Plug.Conn{} = conn, %Email{} = email, max_age \\ 86400) do
-    Phoenix.Token.sign(conn, email.workspace.uuid, email.id, max_age: max_age)
+  def set_verified(%Email{} = email) do
+    email
+    |> Ecto.Changeset.change(verified: true)
+    |> Repo.update()
+  end
+
+  def generate_verification_token(
+        %Plug.Conn{} = conn,
+        %Email{} = email,
+        options \\ [salt: "Invoicex.Emails.Email.token", max_age: 86400]
+      ) do
+    Phoenix.Token.sign(conn, options[:salt], email.id, max_age: options[:max_age])
+  end
+
+  def verify_verification_token(
+        %Plug.Conn{} = conn,
+        token,
+        options \\ [salt: "Invoicex.Emails.Email.token", max_age: 86400]
+      ) do
+    Phoenix.Token.verify(conn, options[:salt], token, max_age: options[:max_age])
   end
 end

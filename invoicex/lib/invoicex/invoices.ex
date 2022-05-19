@@ -43,13 +43,13 @@ defmodule Invoicex.Invoices do
   def get_invoice!(id) do
     Invoice
     |> Repo.get!(id)
-    |> Repo.preload(:workspace)
+    |> Repo.preload([:workspace, :emails])
   end
 
   def get_invoice!(workspace, id) do
     Invoice
     |> Repo.get_by!(workspace_id: workspace.id, id: id)
-    |> Repo.preload(:workspace)
+    |> Repo.preload([:workspace, :emails])
   end
 
   @doc """
@@ -83,6 +83,8 @@ defmodule Invoicex.Invoices do
 
   """
   def update_invoice(%Invoice{} = invoice, attrs) do
+    IO.inspect(attrs)
+
     invoice
     |> change_invoice(attrs)
     |> Repo.update()
@@ -123,10 +125,12 @@ defmodule Invoicex.Invoices do
         _ -> attrs["workspace"]
       end
 
+    emails = Invoicex.Emails.list_emails_by_ids(workspace, attrs["emails"])
+
     invoice
-    |> Repo.preload(:workspace)
     |> Invoice.changeset(attrs)
     |> Ecto.Changeset.put_assoc(:workspace, workspace)
+    |> Ecto.Changeset.put_assoc(:emails, emails)
   end
 
   def get_pdf_url(%Invoice{} = invoice) do

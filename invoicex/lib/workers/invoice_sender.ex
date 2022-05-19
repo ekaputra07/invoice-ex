@@ -35,7 +35,7 @@ defmodule Invoicex.Workers.InvoiceSender do
     with {:ok, file_url} <- Invoices.get_pdf_url(invoice),
          {:ok, file_path} <- Invoices.get_pdf_file(invoice, file_url),
          true <- File.exists?(file_path),
-         {:ok, _} <- InvoicexWeb.Email.send_invoice(invoice, file_path),
+         {:ok, _} <- InvoicexWeb.Mailer.send_invoice(invoice, file_path),
          :ok <- File.rm(file_path) do
       :ok
     else

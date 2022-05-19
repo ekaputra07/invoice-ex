@@ -48,15 +48,24 @@ defmodule InvoicexWeb.EmailController do
 
       _ ->
         conn
-        |> put_flash(:error, "Sorry! we're having issue sending verification email.")
+        |> put_flash(:error, "Sorry! we're having problem sending verification email.")
         |> redirect(to: Routes.email_path(conn, :index))
     end
   end
 
   def verify_email(conn, %{"token" => token}) do
-    conn
-    |> put_flash(:info, "Email verified!")
-    |> redirect(to: Routes.email_path(conn, :verification_status))
+    with {:ok, email_id} <- Emails.verify_verification_token(conn, token),
+         %Email{verified: false} = email <- Emails.get_email(email_id),
+         {:ok, _} <- Emails.set_verified(email) do
+      conn
+      |> put_flash(:info, "Email verified!")
+      |> redirect(to: Routes.email_path(conn, :verification_status))
+    else
+      _ ->
+        conn
+        |> put_flash(:error, "Verification link invalid or expired!")
+        |> redirect(to: Routes.email_path(conn, :verification_status))
+    end
   end
 
   def verification_status(conn, _params), do: render(conn, "verification_status.html")

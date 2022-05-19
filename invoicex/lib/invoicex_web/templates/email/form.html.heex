@@ -9,7 +9,6 @@
   <%= text_input f, :email %>
   <%= error_tag f, :email %>
 
-  <div>
-    <%= submit "Save" %>
-  </div>
+  <%= link "Back", to: Routes.email_path(@conn, :index), class: "button button-outline" %>
+  <%= submit "Save", class: "float-right clearfix" %>
 </.form>
