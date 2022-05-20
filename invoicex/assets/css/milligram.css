@@ -20,10 +20,9 @@ html {
 body {
   color: #606c76;
   font-family: 'Roboto', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
-  font-size: 1.6em;
-  font-weight: 300;
-  letter-spacing: .01em;
-  line-height: 1.6;
+  font-size: 1.4em;
+  font-weight: 400;
+  line-height: 1.4;
 }
 
 blockquote {
@@ -575,7 +574,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-weight: 300;
+  font-weight: 400;
   letter-spacing: -.1rem;
   margin-bottom: 2.0rem;
   margin-top: 0;

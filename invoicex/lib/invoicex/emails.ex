@@ -8,6 +8,7 @@ defmodule Invoicex.Emails do
 
   alias Invoicex.Accounts.Workspace
   alias Invoicex.Emails.Email
+  alias Invoicex.Assocs
 
   @doc """
   Returns the list of emails.
@@ -19,7 +20,7 @@ defmodule Invoicex.Emails do
 
   """
   def list_emails(workspace) do
-    Repo.all(from(e in Email, where: e.workspace_id == ^workspace.id))
+    Repo.all(from(e in Email, where: e.workspace_id == ^workspace.id, order_by: e.id))
     |> Repo.preload(:workspace)
   end
 
@@ -32,12 +33,13 @@ defmodule Invoicex.Emails do
       from(
         e in Email,
         where: e.workspace_id == ^workspace.id,
-        where: e.verified == true
+        where: e.verified == true,
+        order_by: e.id
       )
     )
   end
 
-  def list_emails_by_ids(workspace, nil), do: []
+  def list_emails_by_ids(_workspace, nil), do: []
 
   def list_emails_by_ids(workspace, ids) do
     Repo.all(
@@ -150,6 +152,14 @@ defmodule Invoicex.Emails do
     |> Repo.preload(:workspace)
     |> Email.changeset(attrs)
     |> Ecto.Changeset.put_assoc(:workspace, workspace)
+  end
+
+  def belongs_to_invoices?(%Email{} = email) do
+    Repo.exists?(
+      from(ie in Assocs.InvoiceEmail,
+        where: ie.email_id == ^email.id
+      )
+    )
   end
 
   def set_verified(%Email{} = email) do

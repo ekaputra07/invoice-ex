@@ -14,17 +14,21 @@
       <tr>
         <td><%= link invoice.name, to: Routes.invoice_path(@conn, :edit, invoice), title: "Edit invoice" %></td>
         <td>
-        <%= if invoice.active do %>
-          <i class="fa fa-toggle-on active" style="color: #156500"></i>
-        <% else %>
-          <i class="fa fa-toggle-off"></i>
+        <%= link to: Routes.invoice_path(@conn, :toggle_active, invoice), method: :post, title: "Toggle active status" do %>
+          <%= if invoice.active do %>
+            <i class="fa fa-toggle-on active" style="color: #156500"></i>
+          <% else %>
+            <i class="fa fa-toggle-off"></i>
+          <% end %>
         <% end %>
         </td>
         <td>
-        <%= if invoice.repeat do %>
-          <i class="fa fa-toggle-on" style="color: #156500"></i>
-        <% else %>
-          <i class="fa fa-toggle-off"></i>
+        <%= link to: Routes.invoice_path(@conn, :toggle_recurring, invoice), method: :post, title: "Toggle recurring status" do %>
+          <%= if invoice.repeat do %>
+            <i class="fa fa-toggle-on" style="color: #156500"></i>
+          <% else %>
+            <i class="fa fa-toggle-off"></i>
+          <% end %>
         <% end %>
         </td>
         <td><%= invoice.schedule %></td>

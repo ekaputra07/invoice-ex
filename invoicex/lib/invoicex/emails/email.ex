@@ -8,6 +8,11 @@ defmodule Invoicex.Emails.Email do
 
     belongs_to(:workspace, Invoicex.Accounts.Workspace)
 
+    many_to_many(:invoices, Invoicex.Invoices.Invoice,
+      join_through: "invoice_emails",
+      on_replace: :delete
+    )
+
     timestamps()
   end
 

@@ -15,13 +15,14 @@
 
   <hr/>
 
-  <label>Send to</label>
+  <label>Recipients</label>
   <%= error_tag f, :emails %>
   <%= with options <- checkbox_options(@conn, f, @changeset) do %>
     <%= if length(options) > 0  do %>
       <%= for opt <- checkbox_options(@conn, f, @changeset) do %>
       <input type="checkbox" checked={opt.checked} name="invoice[emails][]" value={opt.value}/> <%= opt.label %><br/>
       <% end %>
+      <%= link "+ Add recipient", to: Routes.email_path(@conn, :index) %>
     <% else %>
       <p>You have no verified email. Add or validate existing ones <%= link "here", to: Routes.email_path(@conn, :index) %>.</p>
     <% end %>
@@ -32,9 +33,6 @@
   <div class="row" style="margin-top: 2em">
     <div class="column">
       <label>Settings</label>
-      <%= checkbox f, :active %>
-      <span>Invoice is active</span>
-      <br/>
       <%= checkbox f, :repeat %>
       <span>Invoice is recurring</span>
     </div>
@@ -47,10 +45,9 @@
   </div>
     <hr/>
       <div>
-      <small>* Invoice ONLY delivered to email address(es) that are verified.</small><br/>
+      <small>* Schedule is just a way to set future date or time, but will only delivered once if recurring is not checked.</small><br/>
       <small>* Updating the schedule while current period is running affecting invoice next run date.</small><br/>
       </div>
-
   <hr/>
   <div>
     <%= submit "Save Invoice", class: "float-right clearfix" %>

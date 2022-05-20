@@ -22,7 +22,7 @@ defmodule Invoicex.Invoices.Invoice do
   @doc false
   def changeset(invoice, attrs) do
     invoice
-    |> cast(attrs, [:name, :body, :active, :repeat, :schedule])
-    |> validate_required([:name, :body, :active, :repeat, :schedule])
+    |> cast(attrs, [:name, :body, :repeat, :schedule])
+    |> validate_required([:name, :body, :repeat, :schedule])
   end
 end

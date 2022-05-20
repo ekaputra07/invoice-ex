@@ -51,6 +51,8 @@ defmodule InvoicexWeb.Router do
     resources("/", InvoiceController, except: [:show])
     get("/:id/preview", InvoiceController, :preview)
     post("/:id/sending_test", InvoiceController, :sending_test)
+    post("/:id/toggle_active", InvoiceController, :toggle_active)
+    post("/:id/toggle_recurring", InvoiceController, :toggle_recurring)
   end
 
   # emails

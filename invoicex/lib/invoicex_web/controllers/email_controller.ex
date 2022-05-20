@@ -1,6 +1,7 @@
 defmodule InvoicexWeb.EmailController do
   use InvoicexWeb, :controller
 
+  alias Invoicex.Repo
   alias Invoicex.Emails
   alias Invoicex.Emails.Email
 
@@ -28,11 +29,23 @@ defmodule InvoicexWeb.EmailController do
 
   def delete(conn, %{"id" => id}) do
     email = Emails.get_email!(conn.assigns.current_workspace, id)
-    {:ok, _email} = Emails.delete_email(email)
 
-    conn
-    |> put_flash(:info, "#{email.email} deleted successfully.")
-    |> redirect(to: Routes.email_path(conn, :index))
+    case Emails.belongs_to_invoices?(email) do
+      true ->
+        conn
+        |> put_flash(
+          :error,
+          "#{email.email} still used by one of your invoice."
+        )
+        |> redirect(to: Routes.email_path(conn, :index))
+
+      false ->
+        {:ok, _email} = Emails.delete_email(email)
+
+        conn
+        |> put_flash(:info, "#{email.email} deleted successfully.")
+        |> redirect(to: Routes.email_path(conn, :index))
+    end
   end
 
   def send_verification_email(conn, %{"id" => id}) do

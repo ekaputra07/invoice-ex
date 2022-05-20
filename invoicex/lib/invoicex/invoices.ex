@@ -8,6 +8,7 @@ defmodule Invoicex.Invoices do
 
   alias Invoicex.Accounts.Workspace
   alias Invoicex.Invoices.Invoice
+  alias Invoicex.Assocs
 
   @doc """
   Returns the list of invoices.
@@ -21,7 +22,8 @@ defmodule Invoicex.Invoices do
   def list_invoices(workspace) do
     Repo.all(
       from(i in Invoice,
-        where: i.workspace_id == ^workspace.id
+        where: i.workspace_id == ^workspace.id,
+        order_by: i.id
       )
     )
   end
@@ -106,6 +108,18 @@ defmodule Invoicex.Invoices do
     Repo.delete(invoice)
   end
 
+  def set_active(%Invoice{} = invoice, value) when is_boolean(value) do
+    invoice
+    |> Ecto.Changeset.change(active: value)
+    |> Repo.update()
+  end
+
+  def set_repeat(%Invoice{} = invoice, value) when is_boolean(value) do
+    invoice
+    |> Ecto.Changeset.change(repeat: value)
+    |> Repo.update()
+  end
+
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking invoice changes.
 
@@ -131,6 +145,14 @@ defmodule Invoicex.Invoices do
     |> Invoice.changeset(attrs)
     |> Ecto.Changeset.put_assoc(:workspace, workspace)
     |> Ecto.Changeset.put_assoc(:emails, emails)
+  end
+
+  def has_recipients?(%Invoice{} = invoice) do
+    Repo.exists?(
+      from(ie in Assocs.InvoiceEmail,
+        where: ie.invoice_id == ^invoice.id
+      )
+    )
   end
 
   def get_pdf_url(%Invoice{} = invoice) do

@@ -31,8 +31,17 @@ defmodule InvoicexWeb.InvoiceController do
 
   def edit(conn, %{"id" => id}) do
     invoice = Invoices.get_invoice!(conn.assigns.current_workspace, id)
-    changeset = Invoices.change_invoice(invoice)
-    render(conn, "edit.html", invoice: invoice, changeset: changeset)
+
+    case invoice.active do
+      true ->
+        conn
+        |> put_flash(:error, "Can not edit running invoice! please deactivate first.")
+        |> redirect(to: Routes.invoice_path(conn, :index))
+
+      false ->
+        changeset = Invoices.change_invoice(invoice)
+        render(conn, "edit.html", invoice: invoice, changeset: changeset)
+    end
   end
 
   def update(conn, %{"id" => id, "invoice" => invoice_params}) do
@@ -51,11 +60,60 @@ defmodule InvoicexWeb.InvoiceController do
 
   def delete(conn, %{"id" => id}) do
     invoice = Invoices.get_invoice!(conn.assigns.current_workspace, id)
-    {:ok, _invoice} = Invoices.delete_invoice(invoice)
 
-    conn
-    |> put_flash(:info, "Invoice deleted successfully.")
-    |> redirect(to: Routes.invoice_path(conn, :index))
+    case invoice.active do
+      true ->
+        conn
+        |> put_flash(:error, "Can not delete running invoice! please deactivate first.")
+        |> redirect(to: Routes.invoice_path(conn, :index))
+
+      false ->
+        {:ok, _invoice} = Invoices.delete_invoice(invoice)
+
+        conn
+        |> put_flash(:info, "Invoice deleted successfully.")
+        |> redirect(to: Routes.invoice_path(conn, :index))
+    end
+  end
+
+  def toggle_active(conn, %{"id" => id}) do
+    invoice = Invoices.get_invoice!(conn.assigns.current_workspace, id)
+
+    new_status = !invoice.active
+
+    if new_status && !Invoices.has_recipients?(invoice) do
+      conn
+      |> put_flash(:error, "Please add recipient(s) to #{invoice.name} invoice.")
+      |> redirect(to: Routes.invoice_path(conn, :index))
+    else
+      case Invoices.set_active(invoice, new_status) do
+        {:ok, _} ->
+          conn
+          |> put_flash(:info, "Active status for #{invoice.name} updated.")
+          |> redirect(to: Routes.invoice_path(conn, :index))
+
+        _ ->
+          conn
+          |> put_flash(:error, "Error updating active status for #{invoice.name}.")
+          |> redirect(to: Routes.invoice_path(conn, :index))
+      end
+    end
+  end
+
+  def toggle_recurring(conn, %{"id" => id}) do
+    invoice = Invoices.get_invoice!(conn.assigns.current_workspace, id)
+
+    case Invoices.set_repeat(invoice, !invoice.repeat) do
+      {:ok, _} ->
+        conn
+        |> put_flash(:info, "Recurring status for #{invoice.name} updated.")
+        |> redirect(to: Routes.invoice_path(conn, :index))
+
+      _ ->
+        conn
+        |> put_flash(:error, "Error updating recurring status for #{invoice.name}.")
+        |> redirect(to: Routes.invoice_path(conn, :index))
+    end
   end
 
   def preview(conn, %{"id" => id}) do
