@@ -18,7 +18,7 @@ services:
     ports:
       - "4000:4000"
     volumes:
-      - ./invoicex:/app
+      - .:/app
     env_file:
       - .env
     depends_on:

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="csrf-token" content={csrf_token_value()}>
+    <%= live_title_tag assigns[:page_title] || @brand_name, suffix: " · Simple and effortless invoice automation for busy people." %>
+    <link phx-track-static rel="stylesheet" href={Routes.static_path(@conn, "/assets/app.css")}/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script defer phx-track-static type="text/javascript" src={Routes.static_path(@conn, "/assets/app.js")}></script>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+
+    <script>
+      $(document).ready(function() {
+          $('#invoice_body').summernote({
+        tabsize: 2,
+        height: 600,
+        toolbar: [
+          ['font', ['bold', 'underline']],
+          ['color', ['color']],
+          ['view', ['codeview']]
+        ]
+      });
+      });
+    </script>
+  </head>
+  <body>
+    <header>
+      <section class="container">
+        <nav>
+          <ul>
+            <%= if @current_workspace do %>
+              <li><%= link "INVOICES", to: Routes.invoice_path(@conn, :index) %></li>
+              <li><%= link "EMAILS", to: Routes.email_path(@conn, :index) %></li>
+              <li><%= link "ACCOUNT", to: Routes.account_path(@conn, :manage_workspace) %></li>
+              <li><%= link "LOGOUT", to: Routes.account_path(@conn, :exit_workspace) %></li>
+            <% else %>
+              <li><%= link "Manage Invoices", to: Routes.account_path(@conn, :access_workspace) %></li>
+            <% end %>
+          </ul>
+        </nav>
+        <a href="/" class="phx-logo">
+          <img src={Routes.static_path(@conn, "/images/logo.png")} alt={@brand_name}/>
+        </a>
+      </section>
+    </header>
+    <%= @inner_content %>
+
+    <footer class="container footer">
+      <hr/>
+      <ul>
+        <li><%= link "Privacy Policy", to: Routes.account_path(@conn, :manage_workspace) %></li>
+      </ul>
+      <ul>
+        <li>&copy; <%= DateTime.utc_now.year %> sendmeinvoice.com</li>
+      </ul>
+    </footer>
+  </body>
+</html>
