@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker-compose run --rm --service-ports elixir "${*:-bash}"
+docker-compose -f docker-compose.yml run --rm --service-ports app "${*:-bash}"

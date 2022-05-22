@@ -1,1 +1,15 @@
+<h3>Access Key</h3>
+<p>For simplicity we don't have account management yet, but you can use the KEY below to login into your account:</p>
+<pre style="font-size: 200%">
 <%= @workspace.uuid %>
+</pre>
+
+<p style="color: red"><strong>IMPORTANT</strong><br/>
+- Please treat your access key as a password, keep it secure!<br/>
+- Don't lose it, we don't have password reset feature.</p>
+
+<hr/>
+
+<h3>Delete Account</h3>
+<p>If you don't want to use our service anymore, feel free to delete it.</p>
+<%= link "Delete My Account", to: Routes.account_path(@conn, :delete_workspace), method: :post, data: [confirm: "Are you sure?"], class: "button button-outline" %>

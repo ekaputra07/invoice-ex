@@ -53,7 +53,7 @@ defmodule Invoicex.Workers.InvoiceSender do
 
   def create_and_send_pdf_invoice(%Invoices.Invoice{} = invoice, attempt) do
     with {:ok, pdf_path} <- get_pdf_file(invoice),
-         {:ok, _} <- InvoicexWeb.Mailer.send_invoice(invoice, pdf_path) do
+         :ok <- InvoicexWeb.Mailer.send_invoice(invoice, pdf_path) do
       File.rm(pdf_path)
       :ok
     else

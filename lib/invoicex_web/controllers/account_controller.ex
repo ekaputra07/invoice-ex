@@ -9,14 +9,14 @@ defmodule InvoicexWeb.AccountController do
         conn
         |> put_flash(
           :info,
-          "A workspace created for you with key #{workspace.uuid} to manage your invoices. Please keep this key somewhere safe."
+          "An account created for you with key #{workspace.uuid} to manage your invoices. Please keep this key somewhere safe."
         )
         |> put_session(:current_workspace, workspace)
-        |> redirect(to: Routes.invoice_path(conn, :index))
+        |> redirect(to: Routes.account_path(conn, :manage_workspace))
 
       {:error, _} ->
         conn
-        |> put_flash(:error, "Error creating workspace!")
+        |> put_flash(:error, "Error creating account!")
         |> redirect(to: Routes.page_path(conn, :index))
     end
   end
@@ -37,7 +37,7 @@ defmodule InvoicexWeb.AccountController do
     else
       _ ->
         conn
-        |> put_flash(:error, "Workspace not found!")
+        |> put_flash(:error, "Account not found!")
         |> redirect(to: Routes.account_path(conn, :access_workspace))
     end
   end
@@ -51,5 +51,23 @@ defmodule InvoicexWeb.AccountController do
     |> clear_session()
     |> put_flash(:info, "You're logged-out.")
     |> redirect(to: Routes.page_path(conn, :index))
+  end
+
+  def delete_workspace(conn, _params) do
+    case Accounts.delete_workspace(conn.assigns.current_workspace) do
+      {:ok, _} ->
+        conn
+        |> clear_session()
+        |> put_flash(:info, "You're account (invoices, emails) has been deleted.")
+        |> redirect(to: Routes.page_path(conn, :index))
+
+      _ ->
+        conn
+        |> put_flash(
+          :error,
+          "Oops! We're having trouble deleting your account, please contact us directly for manual deletion."
+        )
+        |> redirect(to: Routes.account_path(conn, :manage_workspace))
+    end
   end
 end

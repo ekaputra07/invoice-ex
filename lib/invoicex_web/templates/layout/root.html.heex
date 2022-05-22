@@ -35,7 +35,7 @@
           <ul>
             <%= if @current_workspace do %>
               <li><%= link "INVOICES", to: Routes.invoice_path(@conn, :index) %></li>
-              <li><%= link "EMAILS", to: Routes.email_path(@conn, :index) %></li>
+              <li><%= link "RECIPIENTS", to: Routes.email_path(@conn, :index) %></li>
               <li><%= link "ACCOUNT", to: Routes.account_path(@conn, :manage_workspace) %></li>
               <li><%= link "LOGOUT", to: Routes.account_path(@conn, :exit_workspace) %></li>
             <% else %>

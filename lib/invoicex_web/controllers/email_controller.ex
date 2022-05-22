@@ -1,7 +1,6 @@
 defmodule InvoicexWeb.EmailController do
   use InvoicexWeb, :controller
 
-  alias Invoicex.Repo
   alias Invoicex.Emails
   alias Invoicex.Emails.Email
 

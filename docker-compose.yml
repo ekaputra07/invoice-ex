@@ -12,11 +12,14 @@ services:
       timeout: 5s
       retries: 5
 
-  elixir:
-    build: .
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
     entrypoint: [ "/bin/bash", "-c", "--" ]
     ports:
       - "4000:4000"
+      - "443:443" # ssl
     volumes:
       - .:/app
     env_file:

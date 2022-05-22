@@ -30,17 +30,18 @@ defmodule InvoicexWeb.Router do
   scope "/", InvoicexWeb do
     pipe_through(:browser)
 
-    scope "/workspace" do
+    scope "/account" do
       post("/create", AccountController, :create_workspace)
       post("/check", AccountController, :check_workspace)
       get("/access", AccountController, :access_workspace)
     end
 
-    scope "/workspace" do
+    scope "/account" do
       pipe_through(:authenticated)
 
       get("/logout", AccountController, :exit_workspace)
-      get("/manage", AccountController, :manage_workspace)
+      post("/delete", AccountController, :delete_workspace)
+      get("/", AccountController, :manage_workspace)
     end
   end
 
