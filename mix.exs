@@ -53,7 +53,8 @@ defmodule Invoicex.MixProject do
       {:oban, "~> 2.12"},
       {:crontab, "~> 1.1"},
       {:httpoison, "~> 1.8"},
-      {:mustache, "~> 0.4.0"}
+      {:mustache, "~> 0.4.0"},
+      {:timex, "~> 3.0"}
     ]
   end
 
