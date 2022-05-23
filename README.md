@@ -2,6 +2,7 @@
 
 Invoice-ex is a simple web app to automate the creation and sending invoice in PDF format that can be scheduled on specific interval (recurring) or one time in the future. Builts on [Phoenix framework](https://www.phoenixframework.org/) and of course [Elixir programming language](https://elixir-lang.org/).
 
+![screenshot](https://raw.githubusercontent.com/ekaputra07/invoice-ex/main/screenshot.png)
 
 ## A bit of background
 Since the beginning of 2022, I'm officially became *independent remote contractor* that requires me to send invoice every month to the company I work for to get payment for my work.
