@@ -1,31 +1,31 @@
 # Invoice-ex
 
-Invoice-ex is a simple web app to automate the creation and sending invoice in PDF format that can be scheduled on specific interval (recurring) or one time in the future. Builts on [Phoenix framework](https://www.phoenixframework.org/) and of course [Elixir programming language](https://elixir-lang.org/).
+Invoice-ex is a simple web app to automate the creation and sending of invoice in PDF format that can be scheduled on specific interval (recurring) or one time in the future. Builts using [Phoenix framework](https://www.phoenixframework.org/) and of course [Elixir](https://elixir-lang.org/).
 
 ![screenshot](https://raw.githubusercontent.com/ekaputra07/invoice-ex/main/screenshot.png)
 
 ## A bit of background
-Since the beginning of 2022, I'm officially became *independent remote contractor* that requires me to send invoice every month to the company I work for to get payment for my work.
+Since the beginning of 2022, I'm officially became an *independent remote contractor* that requires me to send invoice every month to the company I work for.
 
-They provides me with an invoice template, I just need to adjust it little bit (invoice number, dates etc.) before sending it to our finance departement. This process of *adjusting* only took me a couple of minutes and **honestly its sooo boring and error prone** (need to calculate the dates manually, increments the invoice number manually) which is not a big deal, since this is just a kind of formality and a small mistake won't prevent you from getting paid.
+They provide me with an invoice template, I just need to adjust it little bit (invoice number, dates etc.) before sending it to our finance departement. The process only took me a couple of minute but its **so boring and error prone** (manually changing dates here and there, incrementing invoice number) which is not a big deal and a small mistake won't prevent you from getting paid.
 
-But recently I'm also start learning Elixir and its web framework Phoenix, so I'm more than happy to solve those couple of minute boring process with couple of week development time which is totally worthed from learning perspective.
+But recently I'm also decided to learn Elixir and its web framework Phoenix, I'm more than happy to solve a couple of minute boring task with a couple of week development time which is totally worthed from the learning perspective.
 
-So here it is. Now I have new skillset (Elixir and Phoenix) and got my invoice delivered to me at specific date every month. Sweet!
+So here it is. Now I have new skillset (Elixir and Phoenix) and got my invoice generated and delivered to me every month automatically. Sweet!
 
-If you're interested using it without deploying it yourself, please let me know. I have it deployed and running for myself, but happy to open it for public if anyone interested.
+If you're interested trying without deploying yourself, please let me know. I have it deployed and running in the cloud, happy to open it for public use in case somebody interested.
 
 ## Development
 
 Its just standard Phoenix framework app with PostgreSQL database.
 
-I provides `dev.sh` which you can execute and it will setup development environment for you.
+I provided `dev.sh` script that you can execute and it will spin up development environment without having to install Erlang and Elixir manually on your machine.
 
 ```
 ./dev.sh
 ```
 
-Once inside you need to run these commands:
+Once inside, you need to run these commands:
 
   * Install dependencies with `mix deps.get`
   * Create and migrate your database with `mix ecto.setup`
