@@ -11,6 +11,10 @@ config :invoicex,
   brand_name: "Send Me Invoice!"
 
 config :invoicex,
+  invoice_templates_root: "priv/static",
+  invoice_templates_dir: "invoice_templates"
+
+config :invoicex,
   ecto_repos: [Invoicex.Repo]
 
 # Configures the endpoint

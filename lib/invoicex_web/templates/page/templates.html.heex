@@ -1,0 +1,16 @@
+<%= for tpl <- @templates do %>
+<div class="row">
+    <div class="column">
+    <img src={Routes.static_path(@conn, tpl["img_url"])} alt={tpl["name"]}/>
+    </div>
+    <div class="column column-33">
+    <p><h3><%= tpl["name"] %></h3></p>
+    <p><%= tpl["description"] %> (<a href={tpl["html_url"]} target="_blank">demo</a>)</p>
+    
+    <p>
+    Author: <%= tpl["author"] %><br/>
+    Source: <a href={tpl["source"]} target="_blank"><%= tpl["source"] %></a>
+    </p>
+    </div>
+</div>
+<% end %>

@@ -34,6 +34,7 @@
         <nav>
           <ul>
             <%= if @current_workspace do %>
+              <li><%= link "TEMPLATES", to: Routes.page_path(@conn, :templates) %></li>
               <li><%= link "INVOICES", to: Routes.invoice_path(@conn, :index) %></li>
               <li><%= link "RECIPIENTS", to: Routes.email_path(@conn, :index) %></li>
               <li><%= link "ACCOUNT", to: Routes.account_path(@conn, :manage_workspace) %></li>

@@ -17,7 +17,8 @@ defmodule Invoicex.Application do
       # Start the Endpoint (http/https)
       InvoicexWeb.Endpoint,
       # Oban
-      {Oban, Application.fetch_env!(:invoicex, Oban)}
+      {Oban, Application.fetch_env!(:invoicex, Oban)},
+      Invoicex.Invoices.TemplateServer
       # Start a worker by calling: Invoicex.Worker.start_link(arg)
       # {Invoicex.Worker, arg}
     ]

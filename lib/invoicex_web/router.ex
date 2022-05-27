@@ -24,6 +24,7 @@ defmodule InvoicexWeb.Router do
     pipe_through(:browser)
 
     get("/", PageController, :index)
+    get("/templates", PageController, :templates)
   end
 
   # worksoace
