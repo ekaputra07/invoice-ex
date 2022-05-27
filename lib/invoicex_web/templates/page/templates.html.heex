@@ -1,9 +1,10 @@
 <%= for tpl <- @templates do %>
-<div class="row">
-    <div class="column">
+<div class="row" style="margin-bottom: 20px">
+    <div class="column" style="border: 2px solid #eee">
     <img src={Routes.static_path(@conn, tpl["img_url"])} alt={tpl["name"]}/>
     </div>
     <div class="column column-33">
+    <div style="padding-left: 20px">
     <p><h3><%= tpl["name"] %></h3></p>
     <p><%= tpl["description"] %> (<a href={tpl["html_url"]} target="_blank">demo</a>)</p>
     
@@ -11,6 +12,8 @@
     Author: <%= tpl["author"] %><br/>
     Source: <a href={tpl["source"]} target="_blank"><%= tpl["source"] %></a>
     </p>
+    <p><%= link "Use Template", to: Routes.invoice_path(@conn, :new, tpl: tpl["id"]), class: "button button-outline" %></p>
+    </div>
     </div>
 </div>
 <% end %>
