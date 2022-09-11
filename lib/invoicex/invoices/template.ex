@@ -72,14 +72,11 @@ defmodule Invoicex.Invoices.TemplateServer do
   # callbacks
   @impl GenServer
   def init(root_dir) do
-    # we don't do the actual template loading here so we're not blocking init
-    send(self(), :real_init)
-
-    {:ok, {root_dir, nil}}
+    {:ok, {root_dir, nil}, {:continue, :load_templates}}
   end
 
   @impl GenServer
-  def handle_info(:real_init, {root_dir, _}) do
+  def handle_continue(:load_templates, {root_dir, _}) do
     {:noreply, {root_dir, Template.load(root_dir)}}
   end
 
