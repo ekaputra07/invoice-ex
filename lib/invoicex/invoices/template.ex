@@ -3,14 +3,16 @@ defmodule Invoicex.Invoices.Template do
 
   defstruct entries: []
 
-  def load({root, dir}) do
+  def load(args) do
+    template_dir = Keyword.fetch!(args, :template_dir)
+
     entries =
-      Path.wildcard("#{root}/#{dir}/*")
+      Path.wildcard("#{template_dir}/*")
       |> Enum.map(&check_detail/1)
-      |> Enum.map(fn t -> load_detail(t, root) end)
+      |> Enum.map(&load_detail(&1, template_dir))
       |> Enum.filter(fn t -> !is_nil(t) end)
 
-    Logger.debug("#{length(entries)} template(s) successfully loaded")
+    Logger.info("#{length(entries)} template(s) successfully loaded")
     %Invoicex.Invoices.Template{entries: entries}
   end
 
@@ -28,24 +30,30 @@ defmodule Invoicex.Invoices.Template do
       {html_path, json_path, img_path}
     else
       _ ->
-        Logger.debug("template dir #{dir} found, but invalid!")
+        Logger.info("template dir #{dir} found, but invalid!")
         nil
     end
   end
 
   defp load_detail(nil, _), do: nil
 
-  defp load_detail({html_path, json_path, img_path}, root) do
+  defp load_detail({html_path, json_path, img_path}, template_dir) do
     with {:ok, body} <- File.read(json_path),
          {:ok, %{"id" => _, "name" => _, "description" => _, "author" => _, "source" => _} = meta} <-
            Jason.decode(body) do
       meta
       |> Map.put("html_path", html_path)
-      |> Map.put("html_url", Path.join("/", Path.relative_to(html_path, root)))
-      |> Map.put("img_url", Path.join("/", Path.relative_to(img_path, root)))
+      |> Map.put(
+        "html_url",
+        Path.join("/", Path.relative_to(html_path, Path.dirname(template_dir)))
+      )
+      |> Map.put(
+        "img_url",
+        Path.join("/", Path.relative_to(img_path, Path.dirname(template_dir)))
+      )
     else
       _ ->
-        Logger.debug("template meta #{json_path} found, but invalid!")
+        Logger.info("template meta #{json_path} found, but invalid!")
         nil
     end
   end
@@ -57,10 +65,11 @@ defmodule Invoicex.Invoices.TemplateServer do
   alias Invoicex.Invoices.Template
 
   def start_link(_opts) do
-    root = Application.fetch_env!(:invoicex, :invoice_templates_root)
-    dir = Application.fetch_env!(:invoicex, :invoice_templates_dir)
-    Logger.debug("starting template server with root dir: #{root}")
-    GenServer.start_link(__MODULE__, {root, dir}, name: __MODULE__)
+    template_dir =
+      Application.app_dir(:invoicex, [Application.fetch_env!(:invoicex, :invoice_templates_dir)])
+
+    Logger.info("starting template server with template dir: #{template_dir}")
+    GenServer.start_link(__MODULE__, template_dir, name: __MODULE__)
   end
 
   # interfaces
@@ -71,17 +80,17 @@ defmodule Invoicex.Invoices.TemplateServer do
 
   # callbacks
   @impl GenServer
-  def init(root_dir) do
-    {:ok, {root_dir, nil}, {:continue, :load_templates}}
+  def init(template_dir) do
+    {:ok, {template_dir, nil}, {:continue, :load_templates}}
   end
 
   @impl GenServer
-  def handle_continue(:load_templates, {root_dir, _}) do
-    {:noreply, {root_dir, Template.load(root_dir)}}
+  def handle_continue(:load_templates, {template_dir, _}) do
+    {:noreply, {template_dir, Template.load(template_dir: template_dir)}}
   end
 
   @impl GenServer
-  def handle_call(:list, _caller, {root_dir, template}) do
-    {:reply, Template.list(template), {root_dir, template}}
+  def handle_call(:list, _caller, {template_dir, template}) do
+    {:reply, Template.list(template), {template_dir, template}}
   end
 end

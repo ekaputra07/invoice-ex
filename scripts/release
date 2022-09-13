@@ -1,0 +1,8 @@
+#!/bin/bash -eu
+
+cd $(dirname $0)/..
+
+IMAGE_NAME=ekaputra07/invoice-ex:${*:-latest}
+
+docker build -f Dockerfile.prod -t $IMAGE_NAME .
+docker push $IMAGE_NAME
